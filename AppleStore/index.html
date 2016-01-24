@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Apple Store</title>
+    <style type="text/css">
+       body { 
+            background-image: url('http://pawelbrzycki.com/images/tlo.gif');
+            background-repeat: repeat-x;
+            background-color: #f1f1f1;
+            font-family: Verdana, sans-serif;
+            width: 100%;
+            color: #000;
+            }
+       h1   {
+            font-size: 30px;
+             
+            }
+       h2   {
+            font-size: 20px;
+            color: red;
+            }
+    </style>
+</head>
+<body>
+    <div><br /><br />
+        <center><h1>Tworzenie Web API</h1></center><br /><br />
+    </div>
+    <div><center>
+    <h2>Dostępne modele</h2>
+    <ul id="products" />
+</div>
+    <div><center>
+    <h2>Szukaj po ID produktu</h2>
+    <input type="text" id="prodId" size="5" />
+    <input type="button" value="Wyszukaj" onclick="find();" />
+    <p id="product" />
+</div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+    var uri = 'api/products';
+
+    $(document).ready(function () {
+      // Send an AJAX request
+      $.getJSON(uri)
+          .done(function (data) {
+            // On success, 'data' contains a list of products.
+            $.each(data, function (key, item) {
+              // Add a list item for the product.
+              $('<li>', { text: formatItem(item) }).appendTo($('#products'));
+            });
+          });
+    });
+
+    function formatItem(item) {
+      return item.Name + ': $' + item.Price;
+    }
+
+    function find() {
+      var id = $('#prodId').val();
+      $.getJSON(uri + '/' + id)
+          .done(function (data) {
+            $('#product').text(formatItem(data));
+          })
+          .fail(function (jqXHR, textStatus, err) {
+            $('#product').text('Error: ' + err);
+          });
+    }
+    </script>
+    </center></body>
+</html>
